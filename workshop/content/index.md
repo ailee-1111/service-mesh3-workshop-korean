@@ -1,28 +1,28 @@
 # OpenShift Service Mesh
 
-## Description 
+## 설명 (Description)
 
-As modern applications move toward microservices based architectures the importance of a platform to back both development and operational work grows. Development teams struggle with building, debugging, and connecting services properly. And application operations teams face increasing challenges with hybrid deployments, scaling bottlenecks, recovering from failure, and gathering metrics. Red Hat’s OpenShift Service Mesh lets you connect, secure, control, and observe your microservice based applications.
-
-
-## Who should attend
-
-The workshop is ideal for developers, architects, and technical leads interested in learning more about the latest technologies for microservices based applications. You should be familiar with the fundamentals of containers and Kubernetes.
+현대 애플리케이션이 마이크로서비스 기반 아키텍처로 전환됨에 따라, 개발과 운영 모두를 지원하는 플랫폼의 중요성이 커지고 있습니다. 개발 팀은 서비스를 올바르게 구축, 디버깅 및 연결하는 데 어려움을 겪고 있습니다. 또한 애플리케이션 운영 팀은 하이브리드 배포, 확장성 병목 현상, 장애 복구 및 메트릭 수집과 관련된 점점 더 많은 과제에 직면하고 있습니다. Red Hat의 OpenShift Service Mesh는 마이크로서비스 기반 애플리케이션을 연결, 보안, 제어 및 관찰할 수 있도록 지원합니다.
 
 
-## What you will learn
+## 참석 대상 (Who should attend)
 
-In this full day, hands-on workshop you'll learn about to operate and manage a service mesh for a microservices application using Red Hat OpenShift Service Mesh. You will get hands-on experience with:
-- Installing a service mesh
-- Building containers for your microservices
-- Leveraging a service mesh to improve operational observability
-- Leveraging a service mesh to address microservice challenges
-- Leveraging a service mesh to implement microservice security
+본 워크숍은 마이크로서비스 기반 애플리케이션을 위한 최신 기술에 관심이 있는 개발자, 아키트 및 기술 리더에게 매우 적합합니다. 컨테이너 및 Kubernetes의 기본 개념에 익숙해야 합니다.
 
 
-## Introduction
-Welcome to the workshop!
+## 학습 내용 (What you will learn)
 
-If you are on-site with us, the instructor will walk you through and kick off each lab.  Otherwise, if you're running this on your own, just go through the list of labs in order (as some build off of each other).
+이 하루 일정의 실습 워크숍에서는 Red Hat OpenShift Service Mesh를 사용하여 마이크로서비스 애플리케이션의 서비스 메시를 운영하고 관리하는 방법을 배웁니다. 다음 내용을 실습하게 됩니다:
+- 서비스 메시 설치
+- 마이크로서비스용 컨테이너 빌드
+- 서비스 메시를 활용한 운영 관찰 가능성(Observability) 향상
+- 서비스 메시를 활용한 마이크로서비스 과제 해결
+- 서비스 메시를 활용한 마이크로서비스 보안 구현
 
-These labs have been tailored for OpenShift 4.x
+
+## 소개 (Introduction)
+워크숍에 오신 것을 환영합니다!
+
+강사와 함께 현장에서 진행하는 경우, 강사가 각 실습을 안내하고 시작해 줄 것입니다. 그렇지 않고 개인적으로 진행하는 경우에는 실습 목록을 순서대로 진행해 주세요 (일부 실습은 이전 실습을 바탕으로 진행됩니다).
+
+이 실습들은 OpenShift 4.x 버전에 맞춤 설계되었습니다.

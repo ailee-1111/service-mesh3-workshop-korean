@@ -1,12 +1,12 @@
-# That's it!
-Hopefully, these labs provided you some idea of why a service mesh is critical when developing and operating microservice applications. Istio is an emerging technology so keep checking the upstream announcements and blog for exciting news.
+# 수고하셨습니다!
+이번 실습을 통해 마이크로서비스 애플리케이션을 개발하고 운영할 때 서비스 메시가 왜 중요한지 이해하셨기를 바랍니다. Istio는 계속 발전하고 있는 기술이므로, 흥미로운 새로운 소식은 업스트림 공지사항과 블로그를 지속적으로 확인해 주세요.
 
-Also, release notes are a great place to see changes that occurred between releases. You can find the [OpenShift Service Mesh release notes][1] here and the upstream [Istio project release notes here][2].
+또한, 릴리스 노트는 버전 간의 변경 사항을 확인하기에 아주 좋은 곳입니다. [OpenShift Service Mesh 릴리스 노트][1]와 업스트림 [Istio 프로젝트 릴리스 노트][2]를 여기서 확인하실 수 있습니다.
 
-# Get even deeper
-This workshop wasn't intended to be full training but rather a "taste of service mesh". For a full training experience we recommend you take an official Red Hat course. It'll get much deeper into the concepts and get your ready to run service mesh in your own environment.
+# 더 깊이 있게 배우기
+이 워크숍은 전체 교육 과정을 제공하기보다는 '서비스 메시 맛보기'용으로 설계되었습니다. 보다 완벽한 교육 경험을 원하신다면 공식 Red Hat 교육 과정을 수강하는 것을 권장합니다. 개념을 훨씬 더 깊이 있게 배우고 자체 환경에서 서비스 메시를 실행할 준비를 마칠 수 있습니다.
 
-Reach out to your Red Hat account rep for getting access to official training.
+공식 교육 과정을 이용하시려면 Red Hat 담당자에게 문의해 주세요.
 
 [1]: https://docs.openshift.com/container-platform/latest/service_mesh/servicemesh-release-notes.html
 [2]: https://istio.io/news/releases/

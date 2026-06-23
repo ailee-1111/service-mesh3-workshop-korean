@@ -1,11 +1,11 @@
-# Building a Microservice
+# 마이크로서비스 빌드하기 (Building a Microservice)
 
 <blockquote>
 <i class="fa fa-desktop"></i>
-In the browser, navigate to the 'Profile' section in the header.
+브라우저에서 헤더의 'Profile' 섹션으로 이동합니다.
 </blockquote>
 
-<p><i class="fa fa-info-circle"></i> If you lost the URL, you can retrieve it via:</p>
+<p><i class="fa fa-info-circle"></i> URL을 잊어버린 경우 다음 명령어로 다시 확인할 수 있습니다:</p>
 
 ```execute
 echo $GATEWAY_URL
@@ -13,28 +13,28 @@ echo $GATEWAY_URL
 
 <br>
 
-You should see the following:
+다음 화면이 표시되어야 합니다:
 
 <img src="images/app-unknownuser.png" width="1024"><br/>
- *Unknown Profile Page*
+ *알 수 없는 프로필 페이지*
 
-The UI shows an unknown user and that's because there's no profile service for your application.  You are going to build a new microservice for user profiles and add this to your service mesh.
+UI에 알 수 없는 사용자(unknown user)가 표시되는 이유는 애플리케이션에 프로필 서비스가 아직 없기 때문입니다. 이제 사용자 프로필을 위한 새로운 마이크로서비스를 빌드하고 이를 서비스 메시물에 추가할 것입니다.
 
-## Application Code
+## 애플리케이션 코드 (Application Code)
 
-Your new application is written in Java, whereas the other backend components such as 'app-ui' and 'boards' are written in NodeJS.  One of the advantages of Istio is that it is agnostic to the programming languages of the running microservices.
+새로운 애플리케이션은 Java로 작성되었으며, 'app-ui' 및 'boards'와 같은 다른 백엔드 컴포넌트는 NodeJS로 작성되었습니다. Istio의 장점 중 하나는 실행 중인 마이크로서비스의 프로그래밍 언어에 구애받지 않는다(agnostic)는 점입니다.
 
 
 <blockquote>
 <i class="fa fa-terminal"></i>
-Take a look at the "UserProfile" class in your repository:
+리포지토리의 "UserProfile" 클래스를 살펴봅니다:
 </blockquote>
 
 ```execute
 cat ./code/userprofile/src/main/java/org/microservices/demo/json/UserProfile.java | grep "public UserProfile(String" -A 7
 ```
 
-Output:
+출력 결과:
 ```java
     public UserProfile(String id, String firstname, String lastname, String aboutme) {
         this.id = id;
@@ -45,22 +45,22 @@ Output:
     }
 ```
 
-This class encapsulates information about the user such as the first and last name.
+이 클래스는 사용자의 성(last name)과 이름(first name) 등의 정보를 캡슐화합니다.
 
 <br>
 
-Your application also exposes a REST API to interact with the service.
+또한 애플리케이션은 서비스와 상호 작용할 수 있도록 REST API를 노출합니다.
 
 <blockquote>
 <i class="fa fa-terminal"></i>
-Next, take a look at the "UserProfileService" class:
+다음으로 "UserProfileService" 클래스를 살펴봅니다:
 </blockquote>
 
 ```execute
 cat ./code/userprofile/src/main/java/org/microservices/demo/service/UserProfileService.java | grep "UserProfile getProfile(" -B 5
 ```
 
-Output:
+출력 결과:
 ```java
     /**
      * return a specific profile
@@ -70,26 +70,26 @@ Output:
     UserProfile getProfile(@NotBlank String id);
 ```
 
-This interface includes the REST methods for getting and setting user profile information.
+이 인터페이스는 사용자 프로필 정보를 조회하고 설정하기 위한 REST 메서드를 포함하고 있습니다.
 
 <br>
 
-## Build Application
+## 애플리케이션 빌드하기 (Build Application)
 
-You are ready to build the application.  
+이제 애플리케이션을 빌드할 준비가 되었습니다.  
 
-Use a [BuildConfig][1] to build the application image.  A `BuildConfig` template was already created for you.
+애플리케이션 이미지를 빌드하기 위해 [BuildConfig][1]를 사용합니다. `BuildConfig` 템플릿은 이미 생성되어 있습니다.
 
 <blockquote>
 <i class="fa fa-terminal"></i>
-Verify the base image used to build the application:
+애플리케이션 빌드에 사용되는 베이스 이미지를 확인합니다:
 </blockquote>
 
 ```execute
 cat ./config/app/userprofile-build.yaml | grep -A 4 sourceStrategy
 ```
 
-Output (snippet):
+출력 결과 (일부):
 ```yaml
       sourceStrategy:
         from:
@@ -98,13 +98,13 @@ Output (snippet):
           namespace: openshift
 ```
 
-Notice the build uses a base Java image to build the application.
+빌드 시 애플리케이션을 빌드하기 위해 Java 베이스 이미지를 사용하는 것을 알 수 있습니다.
 
 <br>
 
 <blockquote>
 <i class="fa fa-terminal"></i>
-Create the build:
+빌드를 생성합니다:
 </blockquote>
 
 ```execute
@@ -117,16 +117,16 @@ oc new-app -f ./config/app/userprofile-build.yaml \
 
 <blockquote>
 <i class="fa fa-terminal"></i>
-Start the build:
+빌드를 시작합니다:
 </blockquote>
 
 ```execute
 oc start-build userprofile-1.0 -F
 ```
 
-The builder will compile the source code and use the base image to create your deployable image artifact.  You should eventually see a successful build.
+빌더가 소스 코드를 컴파일하고 베이스 이미지를 사용하여 배포 가능한 이미지 아티팩트를 생성합니다. 최종적으로 빌드가 성공한 것을 확인할 수 있습니다.
 
-Output (snippet):
+출력 결과 (일부):
 ```
 ...
 [INFO] ------------------------------------------------------------------------
@@ -140,18 +140,18 @@ Output (snippet):
 
 <br>
 
-Once the build is complete, the image is stored in the OpenShift local repository.
+빌드가 완료되면 이미지는 OpenShift 로컬 레지스트리에 저장됩니다.
 
 <blockquote>
 <i class="fa fa-terminal"></i>
-Verify the image was created:
+이미지가 생성되었는지 확인합니다:
 </blockquote>
 
 ```execute
 oc get is userprofile
 ```
 
-Output:
+출력 결과:
 ```
 NAME          IMAGE REPOSITORY                                                                  TAGS     UPDATED
 userprofile   image-registry.openshift-image-registry.svc:5000/microservices-demo/userprofile   1.0   3 minutes ago

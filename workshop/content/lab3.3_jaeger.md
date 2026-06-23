@@ -1,36 +1,38 @@
-# Distributed Tracing with Jaeger
+# Jaeger를 이용한 분산 추적 (Distributed Tracing with Jaeger)
 
-[Jaeger][1] is a distributed tracing tool that lets you trace requests as they flow through your service mesh.  This is incredibly useful for debugging performance issues in your microservices architecture. 
+[Jaeger][1]는 서비스 메시를 통과하는 요청들의 흐름을 추적할 수 있도록 돕는 분산 추적 도구입니다. 이는 마이크로서비스 아키텍처에서 발생하는 성능 문제를 디버깅할 때 엄청난 강점을 발휘합니다. 
 
-## Explore Jaeger
+## Jaeger 살펴보기 (Explore Jaeger)
 
-First, let's explore the Jaeger user interface.
+먼저 Jaeger 사용자 인터페이스를 살펴보겠습니다.
 
 <blockquote>
 <i class="fa fa-desktop"></i>
-Open the Jaeger console. Retrieve the endpoint for Jaeger: 
+Jaeger 콘솔을 엽니다. Jaeger의 엔드포인트를 확인합니다: 
 </blockquote>
 
 ```execute
 echo $(oc get route jaeger -n %username%-istio --template='https://{{.spec.host}}')
 ```
 
-Click 'Allow selected permissions' if prompted to authorized access.
+액세스 승인 요청 창이 뜨면 'Allow selected permissions'를 클릭합니다.
 
-> Navigate to this URL in the browser. Login with the same credentials you were provided to access OpenShift. 
+<blockquote>
+브라우저에서 이 URL로 이동합니다. OpenShift에 접속할 때 제공받은 자격 증명(ID/PW)과 동일한 자격 증명으로 로그인합니다. 
+</blockquote>
 
-Once logged in, you should be presented with the Jaeger console:
+로그인하면 다음과 같은 Jaeger 콘솔 화면이 나타납니다:
 
 <img src="images/jaeger-welcome.png" width="1024"><br/>
-*Jaeger Welcome*
+*Jaeger 환영 화면*
 
 <br>
 
-You need to create traces to explore how requests flow in your mesh.
+메시 내부에서 요청이 어떻게 흐르는지 알아보기 위해 추적 데이터를 생성해야 합니다.
 
 <blockquote>
 <i class="fa fa-terminal"></i>
-Send load to the application user interface:
+애플리케이션 사용자 인터페이스(UI)에 부하를 전송합니다:
 </blockquote>
 
 ```execute
@@ -38,56 +40,56 @@ for ((i=1;i<=100;i++)); do curl -s -o /dev/null $GATEWAY_URL; done
 ```
 
 <br>
-Let's inspect the traces for your service.  
+여러분의 서비스에 생성된 추적 데이터를 검사해 보겠습니다.  
 
-On the left bar under **Search**, select `app-ui.%username%` for 'Service' and `boards-%username%.svc.cluster.local` for **Operation**.  
+왼쪽 바의 **Search** 아래에서, 'Service'로 `app-ui.%username%`를 선택하고, **Operation**으로 `boards-%username%.svc.cluster.local`를 선택합니다.  
 
-It should look like this:
+다음과 같이 표시되어야 합니다:
 
 <img src="images/jaeger-search-boards.png" width="400"><br/>
-*Search for Traces to Boards Service*
+*Boards 서비스 추적 검색*
 
 <br>
 
 <blockquote>
 <i class="fa fa-desktop"></i>
-Click the 'Find Traces' button and Jaeger should reload with traces to the Boards service.
+'Find Traces' 버튼을 클릭하면 Jaeger가 Boards 서비스로 연결되는 추적 목록을 새로 로드합니다.
 </blockquote>
 
 <img src="images/jaeger-boards-traces.png" width="1024"><br/>
-*Traces to Boards Service*
+*Boards 서비스로의 추적 내역*
 
 <br>
 
 <blockquote>
 <i class="fa fa-desktop"></i>
-Select one of these traces.  
+이 추적 목록 중 하나를 선택합니다.  
 </blockquote>
 
-You'll notice the information includes 'Duration' and 'Total Spans'.  'Duration' indicates the total time it took to send and receive a response for this trace.  'Total Spans' indicates the number of spans; each span represents a unit of work executed for this trace.  In the example below, 'app-ui' took 9.52ms in which 5.14ms was spent on calling the boards service.  The boards service itself took 3.56ms to execute before returning a response.
+표시된 정보 중에 'Duration' 및 'Total Spans'가 포함되어 있는 것을 볼 수 있습니다. 'Duration'은 이 추적을 완료하여 응답을 보내고 받기까지 걸린 총 시간을 의미합니다. 'Total Spans'는 생성된 스팬(span)의 총 개수를 가리키며, 각각의 스팬은 이 추적 과정에서 수행된 개별 작업 단위를 나타냅니다. 아래의 예시에서, 'app-ui'는 총 9.52ms가 소요되었고 그중 5.14ms는 boards 서비스를 호출하는 데 소요되었습니다. boards 서비스 자체는 응답을 반환하기까지 3.56ms가 소요되었습니다.
 
 <img src="images/jaeger-boards-example.png" width="1024"><br/>
-*Boards Service Example*
+*Boards 서비스 예시*
 
 <br>
 
-You can inspect more information about each span by clicking on the span itself.  
+스팬을 직접 클릭하여 개별 스팬에 대한 더 자세한 정보를 볼 수 있습니다.  
 
 <blockquote>
 <i class="fa fa-desktop"></i>
-Expand the two lowest spans in the tree like this:
+다음과 같이 트리 최하단의 스팬 2개를 확장합니다:
 </blockquote>
 
 <img src="images/jaeger-boards-expanded.png" width="1024"><br/>
-*Boards Service Expanded*
+*확장된 Boards 서비스 뷰*
 
-Each span gives you the duration of the span and its start time relative to the total duration.  Under 'Tags', you can see additional information such as the HTTP URL, method, and response.  Finally, you can see the actual IPs of the process that executed this span.  You can verify the IPs match the pods that served this traffic.
+각 스팬은 전체 소요 시간 대비 해당 스팬의 실행 시간 및 시작 시간을 보여줍니다. 'Tags' 아래에서는 HTTP URL, 메서드, 응답 결과와 같은 추가 정보를 볼 수 있습니다. 마지막으로, 이 스팬을 실행한 프로세스의 실제 IP를 확인할 수 있습니다. 이 IP들이 실제 트래픽을 처리한 파드(Pod)의 IP와 일치하는지 검증할 수 있습니다.
 
 <br>
 
 <blockquote>
 <i class="fa fa-terminal"></i>
-Verify the app-ui pod IP:
+app-ui 파드의 IP를 확인합니다:
 </blockquote>
 
 ```execute
@@ -96,106 +98,106 @@ oc get pods -l deploymentconfig=app-ui -o jsonpath='{.items[*].status.podIP}{"\n
 
 <blockquote>
 <i class="fa fa-terminal"></i>
-Verify the boards pod IP:
+boards 파드의 IP를 확인합니다:
 </blockquote>
 
 ```execute
 oc get pods -l deploymentconfig=boards -o jsonpath='{.items[*].status.podIP}{"\n"}'
 ```
 
-The pod IPs should match to the process IPs in the spans you expanded.
+파드 IP는 여러분이 확장한 스팬 내의 프로세스 IP와 일치해야 합니다.
 
 <br>
 
-## Debug User Profile
+## 사용자 프로필 디버깅하기 (Debug User Profile)
 
-Let's use what we learned to debug the performance of the user profile service.
+우리가 배운 내용을 토대로 사용자 프로필 서비스의 성능 문제를 디버깅해 보겠습니다.
 
 <blockquote>
 <i class="fa fa-terminal"></i>
-Send load to the user profile service:
+사용자 프로필 서비스에 부하를 전송합니다:
 </blockquote>
 
 ```execute
 for ((i=1;i<=5;i++)); do curl -s -o /dev/null $GATEWAY_URL/profile; done
 ```
 
-<p><i class="fa fa-info-circle"></i> Wait for this to complete as the profile service is slow.</p>
+<p><i class="fa fa-info-circle"></i> 프로필 서비스가 느리게 작동하므로 완료될 때까지 기다리십시오.</p>
 
 <br>
-Inspect the traces.  
+추적 결과를 확인합니다.  
 <br>
 
-On the left bar under **Search**, select `app-ui.%username%` for **Service** and `userprofile-%username%.svc.cluster.local` for 'Operation'.  
+왼쪽 바의 **Search** 아래에서, **Service**로 `app-ui.%username%`를 선택하고, 'Operation'으로 `userprofile-%username%.svc.cluster.local`를 선택합니다.  
 </blockquote>
 
 <blockquote>
 <i class="fa fa-desktop"></i>
-Select 'Find Traces' and Jaeger should reload with traces to the user profile service.
+'Find Traces'를 선택하면 Jaeger가 사용자 프로필 서비스로의 추적 목록을 새로 불러옵니다.
 </blockquote>
 
 <img src="images/jaeger-userprofile-traces.png" width="1024"><br/>
-*Traces to User Profile Service*
+*사용자 프로필 서비스로의 추적 내역*
 
-Notice that some of these traces are fast (on the order of ms) and some are slow (about 10s).  
+일부 추적은 매우 빠르고(몇 ms 수준), 일부 추적은 매우 느린(약 10초 수준) 것을 확인할 수 있습니다.  
 
 <br>
 
 <blockquote>
 <i class="fa fa-desktop"></i>
-Select one of the fast traces to start, and expand the lowest span.  
+먼저 빠른 추적 중 하나를 선택하고, 가장 밑에 있는 스팬을 확장해 봅니다.  
 </blockquote>
 
-Your view should look like this:
+다음과 같은 화면이 나타나야 합니다:
 
 <img src="images/jaeger-userprofile-fast.png" width="1024"><br/>
-*User Profile Fast Service*
+*빠르게 동작한 사용자 프로필 서비스*
 
-In the example above, it took a total of 13.48ms for the trace to complete.  The user profile service itself took 3.5ms to execute and return a response.  You can verify the pod that served this request was the version 1 user profile service.
+위의 예시에서, 추적이 완료되는 데 총 13.48ms가 소요되었습니다. 사용자 프로필 서비스 자체는 실행 후 응답을 반환하기까지 3.5ms가 걸렸습니다. 이 요청을 처리한 파드가 버전 1(v1) 사용자 프로필 서비스임을 확인할 수 있습니다.
 
 <br>
 
 <blockquote>
 <i class="fa fa-terminal"></i>
-Verify the userprofile-v1 pod IP:
+userprofile-v1 파드의 IP를 확인합니다:
 </blockquote>
 
 ```execute
 oc get pods -l deploymentconfig=userprofile,version=1.0 -o jsonpath='{.items[*].status.podIP}{"\n"}'
 ```
 
-The pod IP should match to the process IP in the span you expanded.
+파드 IP는 여러분이 확장한 스팬 내의 프로세스 IP와 일치해야 합니다.
 
 <br>
 
 <blockquote>
 <i class="fa fa-desktop"></i>
-Now, select one of the slow traces and expand the lowest span.
+이번에는 느린 추적 중 하나를 선택하고 가장 밑에 있는 스팬을 확장합니다.
 </blockquote>
 
-Your view should look like this:
+다음과 같은 화면이 나타나야 합니다:
 
 <img src="images/jaeger-userprofile-slow.png" width="1024"><br/>
-*User Profile Slow Service*
+*느리게 동작한 사용자 프로필 서비스*
 
-In this view, you can easily see that the total time of the request was spent by the userprofile service itself.  In the example above, it started execution at 5:23ms and took 10 seconds to complete.  You can further verify the pod that served this request was the version 2 user profile service.
+이 화면을 통해 요청에 소요된 총 시간이 userprofile 서비스 자체에서 소모되었다는 것을 쉽게 알 수 있습니다. 위의 예시에서는 5.23ms에 실행을 시작하여 완료하는 데 10초가 걸렸습니다. 이 요청을 처리한 파드가 버전 2(v2) 사용자 프로필 서비스임을 추가로 확인할 수 있습니다.
 
 <br>
 
 <blockquote>
 <i class="fa fa-terminal"></i>
-Verify the userprofile-v2 pod IP:
+userprofile-v2 파드의 IP를 확인합니다:
 </blockquote>
 
 ```execute
 oc get pods -l deploymentconfig=userprofile,version=2.0 -o jsonpath='{.items[*].status.podIP}{"\n"}'
 ```
 
-The pod IP should match to the process IP in the span you expanded.
+파드 IP는 여러분이 확장한 스팬 내의 프로세스 IP와 일치해야 합니다.
 
 <br>
 
-At this point, it is really clear that there is a performance issue directly in the version 2 source.  Although the example was simplistic, distributed tracing is incredibly helpful when you have a complicated network of service calls in your mesh.
+이 시점에서 버전 2 소스에 직접적인 성능 문제가 있다는 것이 아주 명백해졌습니다. 예시는 매우 단순했지만, 서비스 메시 내에서 여러 서비스 호출이 얽혀있는 복잡한 네트워크 환경일수록 이러한 분산 추적(Distributed Tracing) 기능은 디버깅에 엄청난 도움을 줍니다.
 
 <br>
 
